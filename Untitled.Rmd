@@ -1,0 +1,54 @@
+---
+title: "food_consumption-dataset"
+author: "Allison Perusse"
+date: "3/18/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+```
+
+```{r} 
+food_consumption_clean <- food_consumption |>
+  mutate(food_category = recode(food_category, "Milk - inc. cheese" = "milk & cheese", "Nuts inc. Peanut Butter" = "nuts", "Wheat and Wheat Products" = "wheat"),
+         food_category = str_to_lower(food_category))
+  
+food_consumption_clean |>
+  group_by(country, food_category) |>
+  summarize(consumption, sum(consumption))
+```
+
+```{r}
+Netherlands <- filter(food_consumption_clean, country == "Netherlands")
+barplot_Netherlands <- ggplot(Netherlands, aes(x = "", co2_emmission, fill = food_category)) + geom_bar(width = 1, stat = "identity") 
+barplot_Netherlands
+```
+
+```{r}
+USA <- filter(food_consumption_clean, country == "USA")
+barplot_USA <- ggplot(USA, aes(x = "", co2_emmission, fill = food_category)) +
+  geom_bar(width = 1, stat = "identity")
+barplot_USA
+```
+
+```{r}
+Niger <- filter(food_consumption_clean, country == "Niger")
+barplot_Niger <- ggplot(Niger, aes(x = "", co2_emmission, fill = food_category)) +
+  geom_bar(width = 1, stat = "identity")
+barplot_Niger
+```
+
+```{r}
+```
