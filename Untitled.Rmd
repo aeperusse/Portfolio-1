@@ -21,6 +21,7 @@ library(patchwork)
 food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
 ```
 
+
 ```{r} 
 food_consumption_clean <- food_consumption |>
   mutate(food_category = recode(food_category, "Milk - inc. cheese" = "milk & cheese", "Nuts inc. Peanut Butter" = "nuts", "Wheat and Wheat Products" = "wheat"),
@@ -32,36 +33,75 @@ food_consumption_clean |>
 ```
 
 ```{r}
+food_consumption_clean |> 
+  group_by(food_category) |> 
+  summarize(con = mean(consumption),
+            emit = mean(co2_emmission))|>
+  arrange(desc(emit))
 
+food_consumption_clean |> 
+  group_by(food_category, country) |>
+  filter(co2_emmission == max(co2_emmission))
+
+food_consumption_clean |> 
+  group_by(food_category, country) |>
+  filter(co2_emmission == min(co2_emmission))
 ```
 
 ```{r}
-Netherlands <- filter(food_consumption_clean, country == "Netherlands")
-barplot_Netherlands <- ggplot(Netherlands, aes(x = "", co2_emmission, fill = food_category)) + geom_bar(width = 1, stat = "identity")
-barplot_Netherlands
+ggplot(data = food_consumption_clean) + 
+  geom_point(mapping = aes(x = consumption, y = co2_emmission, color=food_category))
 ```
 
+USA co2 emissions by foods consumed
 ```{r}
 USA <- filter(food_consumption_clean, country == "USA")
 barplot_USA <- ggplot(USA, aes(x = "", co2_emmission, fill = food_category)) +
   geom_bar(width = 1, stat = "identity")
-barplot_USA
+
+
+pie_USA <- barplot_USA + coord_polar("y", start=0) + scale_fill_brewer(palette="Spectral")+
+  labs(x="", y="CO2 Emissions", fill="Food Category") 
+pie_USA
+```
+
+Argentina co2 emissions by foods consumed
+```{r}
+Argentina <- filter(food_consumption_clean, country == "Argentina")
+
+barplot_Argentina <- ggplot(Argentina, aes(x = "", co2_emmission, fill = food_category)) +
+  geom_bar(width = 1, stat = "identity")
+
+
+pie_Argentina <- barplot_Argentina + coord_polar("y", start=0) + scale_fill_brewer(palette="RdBu")+
+  labs(x="", y="CO2 Emissions", fill="Food Category") 
+pie_Argentina
 ```
 
 ```{r}
-Niger <- filter(food_consumption_clean, country == "Niger")
-barplot_Niger <- ggplot(Niger, aes(x = consumption, y = co2_emmission, fill = food_category, color = food_category)+
-  geom_bar(width = 1, stat = "identity"))
-barplot_Niger
+India <- filter(food_consumption_clean, country == "India")
+barplot_India <- ggplot(India, aes(x = "", co2_emmission, fill = food_category)) +
+  geom_bar(width = 1, stat = "identity")
+
+pie_India <- barplot_India + coord_polar("y", start=0) + 
+  labs(x="", y="CO2 Emissions", fill="Food Category")+
+  scale_fill_brewer(palette="PiYG")
+pie_India
 ```
 
 ```{r}
-specific_countries <- filter(food_consumption_clean, country %in% c("Niger", "USA", "Netherlands"))
-View(specific_countries)
+co2_emmission_by_country <- food_consumption_clean |>
+  group_by(country) |>
+  summarise(co2_emmission=sum(co2_emmission)) |>
+  mutate(country = as.factor(country),
+         country = fct_reorder(country,co2_emmission)) |>
+  arrange(co2_emmission)
+co2_emmission_by_country
 ```
-
 ```{r}
-ggplot(specific_countries) +
-  aes(x = consumption, y = co2_emmission, fill = food_category, color = food_category)
- 
+co2_emmission_by_country |>
+  ggplot()+
+   geom_histogram(aes(x = co2_emmission), binwidth = 100, fill = "dark green") +
+  geom_jitter(aes(x = co2_emmission, y = 1), height = 1, width = 0, color = "grey50") +
+  labs(x = "co2 emmissions per person from food per year", y = "")
 ```
