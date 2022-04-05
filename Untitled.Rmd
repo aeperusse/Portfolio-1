@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
+library(patchwork)
 ```
 
 ```{r}
@@ -31,8 +32,12 @@ food_consumption_clean |>
 ```
 
 ```{r}
+
+```
+
+```{r}
 Netherlands <- filter(food_consumption_clean, country == "Netherlands")
-barplot_Netherlands <- ggplot(Netherlands, aes(x = "", co2_emmission, fill = food_category)) + geom_bar(width = 1, stat = "identity") 
+barplot_Netherlands <- ggplot(Netherlands, aes(x = "", co2_emmission, fill = food_category)) + geom_bar(width = 1, stat = "identity")
 barplot_Netherlands
 ```
 
@@ -45,10 +50,18 @@ barplot_USA
 
 ```{r}
 Niger <- filter(food_consumption_clean, country == "Niger")
-barplot_Niger <- ggplot(Niger, aes(x = "", co2_emmission, fill = food_category)) +
-  geom_bar(width = 1, stat = "identity")
+barplot_Niger <- ggplot(Niger, aes(x = consumption, y = co2_emmission, fill = food_category, color = food_category)+
+  geom_bar(width = 1, stat = "identity"))
 barplot_Niger
 ```
 
 ```{r}
+specific_countries <- filter(food_consumption_clean, country %in% c("Niger", "USA", "Netherlands"))
+View(specific_countries)
+```
+
+```{r}
+ggplot(specific_countries) +
+  aes(x = consumption, y = co2_emmission, fill = food_category, color = food_category)
+ 
 ```
