@@ -106,4 +106,5 @@ co2_emmission_by_country |>
   geom_jitter(aes(x = co2_emmission, y = 1), height = 1, width = 0, color = "grey50") +
   labs(x = "co2 emmissions per person from food per year", y = "") +
 ```
+
 ```{r}
