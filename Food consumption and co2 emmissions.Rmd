@@ -50,7 +50,7 @@ food_consumption_clean |>
 ```
 
 ```{r}
-ggplot(data = food_consumption_clean) + 
+ggplot(food_consumption_clean) + 
   geom_point(mapping = aes(x = consumption, y = co2_emmission, color=food_category))
 ```
 
@@ -99,12 +99,13 @@ co2_emmission_by_country <- food_consumption_clean |>
   arrange(co2_emmission)
 co2_emmission_by_country
 ```
+
 ```{r}
 co2_emmission_by_country |>
   ggplot()+
    geom_histogram(aes(x = co2_emmission), binwidth = 100, fill = "dark green") +
   geom_jitter(aes(x = co2_emmission, y = 1), height = 1, width = 0, color = "grey50") +
-  labs(x = "co2 emmissions per person from food per year", y = "") +
+  labs(x = "co2 emmissions per person from food per year", y = "") 
 ```
 
 ```{r}
