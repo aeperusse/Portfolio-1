@@ -98,6 +98,7 @@ co2_emmission_by_country <- food_consumption_clean |>
   arrange(co2_emmission)
 co2_emmission_by_country
 ```
+
 ```{r}
 co2_emmission_by_country |>
   ggplot()+
